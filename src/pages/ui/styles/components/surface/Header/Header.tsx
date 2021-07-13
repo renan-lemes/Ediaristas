@@ -4,9 +4,9 @@ import { Toolbar } from '@material-ui/core';
 
 const Header: React.FC = () => {
   return (
-    <HeaderAppBar position={"sticky"}>
+    <HeaderAppBar position={'sticky'}>
       <Toolbar>
-        <HeaderLogo src={"/img/logos/logo.svg"} alt={"e-diaristas"} />
+        <HeaderLogo src={'/img/logos/logo.svg'} alt={'e-diaristas'} />
       </Toolbar>
     </HeaderAppBar>
   );
