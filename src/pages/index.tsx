@@ -2,14 +2,24 @@ import SafeEnvironment from './ui/styles/components/feedback/SafeEnvironment/Saf
 import PageTitle from './ui/styles/components/data-display/PageTitle/PageTitle';
 import UserInformation from './ui/styles/components/data-display/UserInformation/UserInformation';
 import TextFieldMask from './ui/styles/components/inputs/TextFieldMask/TextFielMask'
-import { Button, Typography, Container } from '@material-ui/core';
+import { Button, Typography, Container, CircularProgress } from '@material-ui/core';
 import { FormElementsContainer, ProfissionaisPaper } from './ui/styles/pages/index.style';
 import { ProfissionaisContainer } from './ui/styles/pages/index.style';
 import useIndex from './data/hooks/pages/useindex.page';
 
 
 export default function Home() {
-  const {cep, setCep, cepValido} = useIndex();
+  const{
+        cep,
+        setCep,
+        cepValido,
+        buscarProfissionais,
+        erro,
+        diaristas,
+        buscaFeita,
+        carregando,
+        diaristasRestantes,
+       } = useIndex();
 
   return (
     <div>
@@ -31,65 +41,60 @@ export default function Home() {
             value = {'cep'}
             onChange = {(event) => setCep(event.target.value)}
           />
-          {cepValido}
-          <Typography color = {'error'} >CEP inválido</Typography>
+          
+          {erro && <Typography color = {'error'} >{erro}</Typography>}
+
           <Button
             variant = {'contained'}
             color = {'secondary'}
             sx = {{width:'220px'}}
-          >Buscar
+            disabled = {!cepValido || carregando}
+            onClick = {() => buscarProfissionais(cep)}
+          >
+            {carregando ? <CircularProgress size = {20}/> :'Buscar'}
           </Button>
+
         </FormElementsContainer>
+        {buscaFeita && 
+          (diaristas.length > 0 ? (
+            <ProfissionaisPaper>
+            <ProfissionaisContainer>
+              
+              {diaristas.map((item, index) =>{
+                return (
+                  <UserInformation
+                      key = {index}
+                      name = {item.nome_completo}
+                      picture = {item.foto_usuario}
+                      rating = {item.Reputacao}
+                      description = {item.cidade}
+                  />
+                );
+              })}
+            
+            </ProfissionaisContainer>
+            <Container sx = {{textAlign: 'center'}}>
+              {diaristasRestantes > 0 && (
+                <Typography sx = {{mt: 5}}>
+                  ...e mais {diaristasRestantes} {diaristasRestantes > 1 ? 'profissionais atendem' : 'profissional atende'}{' '}  ao seu endereço
+                </Typography> 
+              )}
+              
 
-        <ProfissionaisPaper>
-          <ProfissionaisContainer>
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-            <UserInformation
-                    name = {'Renan Lemes'}
-                    picture = {'https://github.com/renan-lemes.png'}
-                    rating = {4}
-                    description = {'Guarapuava'}
-                  
-                  />
-          </ProfissionaisContainer>
-
-        </ProfissionaisPaper>
+              <Button
+                variant = {'contained'} 
+                color = {'secondary'}
+                sx = {{mt: 5}}
+              >Contratar um profissional </Button>
+            </Container>
+          </ProfissionaisPaper>
+          ) : (
+              <Typography align = {'center'} color = {'textPrimary'}>
+                Ainda não temos nenhuma diarista disponivel em sua região 
+              </Typography>
+          ))}
+        
       </Container>
-    
     </div>
   );
 }
